@@ -6,6 +6,18 @@ interface I_Themes {
     acc_itemColor: string;
 };
 
-export const LightTheme = {};
+export const LightTheme: I_Themes = {
+    textColor: "",
+    bgColor: "",
+    itemColor: "",
+    acc_textColor: "",
+    acc_itemColor: ""
+};
 
-export const DarkTheme = {};
+export const DarkTheme: I_Themes= {
+    textColor: "",
+    bgColor: "",
+    itemColor: "",
+    acc_textColor: "",
+    acc_itemColor: ""
+};

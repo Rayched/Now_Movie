@@ -1,7 +1,7 @@
 //App Components
 
 import { ThemeProvider } from "styled-components";
-import Router from "./router";
+import Router from "./Router";
 import { DarkTheme, LightTheme } from "./modules/Themes";
 import { useState } from "react";
 
