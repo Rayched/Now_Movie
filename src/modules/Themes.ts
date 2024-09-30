@@ -7,17 +7,17 @@ interface I_Themes {
 };
 
 export const LightTheme: I_Themes = {
-    textColor: "",
-    bgColor: "",
-    itemColor: "",
+    textColor: "black",
+    bgColor: "white",
+    itemColor: "#ffcccc",
     acc_textColor: "",
     acc_itemColor: ""
 };
 
 export const DarkTheme: I_Themes= {
-    textColor: "",
-    bgColor: "",
-    itemColor: "",
+    textColor: "white",
+    bgColor: "#130f40",
+    itemColor: "#273c75",
     acc_textColor: "",
     acc_itemColor: ""
 };
