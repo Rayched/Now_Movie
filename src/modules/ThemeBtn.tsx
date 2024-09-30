@@ -10,6 +10,10 @@ const ToggleBtn = styled.button`
     background-color: ${(props) => props.theme.itemColor};
     color: inherit;
     font-weight: bold;
+
+    &:hover{
+        background-color: ${(props) => props.theme.accentColor};
+    }
 `;
 
 function ThemeBtn(){

@@ -36,6 +36,7 @@ const MovieList = styled.div`
 const MovieItem = styled.li`
     display: flex;
     flex-direction: row;
+    padding: 5px;
     margin: 5px 0px;
     font-weight: bold;
     width: 500px;
@@ -54,7 +55,12 @@ const MovieItem = styled.li`
         justify-content: center;
     }
 
-    border: 2px solid ${(props) => props.theme.textColor};
+    border: 3px solid ${(props) => props.theme.textColor};
+    border-radius: 10px;
+
+    &:hover {
+        background-color: ${(props) => props.theme.accentColor};
+    }
 `;
 
 const Footer = styled.footer`
