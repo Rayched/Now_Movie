@@ -77,7 +77,8 @@ const Footer = styled.footer`
 function Movies(){
     const {
         isLoading: isMovies, 
-        data: Movies
+        data: Movies,
+        isError: MoviesError
     } = useQuery("MoviesData", MoviesData);
 
     return (

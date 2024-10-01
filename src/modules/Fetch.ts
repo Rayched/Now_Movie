@@ -55,7 +55,7 @@ async function MoviesInfo(movie: I_Movies){
 //Kofic, 일일 박스오피스 데이터를 fetch하는 function
 export async function MoviesData(){
     const DailyBoxOffice = await(await(
-        await fetch(`${Kofic_baseURL}/boxoffice/searchDailyBoxOfficeList.json?key=3a15c5393ac14d11f6b132d6a07f330c&targetDt=${targetDt}`)
+        await fetch(`http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=3a15c5393ac14d11f6b132d6a07f330c&targetDt=${targetDt}`)
     ).json()).boxOfficeResult.dailyBoxOfficeList;
 
     const getDailyData = await (
