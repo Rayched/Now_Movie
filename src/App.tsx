@@ -5,6 +5,7 @@ import Router from "./Router";
 import { DarkTheme, LightTheme } from "./modules/Themes";
 import { isDark } from "./atoms";
 import { useRecoilValue } from "recoil";
+import {ReactQueryDevtools} from "react-query/devtools";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -52,6 +53,10 @@ const GlobalStyle = createGlobalStyle`
     border-collapse: collapse;
     border-spacing: 0;
   }
+  a {
+    text-decoration: none;
+    display: block;
+  }
 `;
 
 function App(){
@@ -62,6 +67,7 @@ function App(){
       <ThemeProvider theme={Themes ? DarkTheme : LightTheme}>
           <Router />
           <GlobalStyle />
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-left"/>
       </ThemeProvider>
     </div>
   );

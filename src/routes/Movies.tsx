@@ -1,7 +1,11 @@
 import { useQuery } from "react-query";
-import { MoviesData} from "../modules/Fetch";
 import styled from "styled-components";
 import ThemeBtn from "../modules/ThemeBtn";
+import { useSetRecoilState } from "recoil";
+import { getDailyBoxOffice } from "../modules/Fetch";
+import { I_MovieDatas, MoviesData } from "../atoms";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const MainWrapper = styled.div`
     display: flex;
@@ -41,19 +45,20 @@ const MovieItem = styled.li`
     font-weight: bold;
     width: 500px;
 
+    color: ${(props) => props.theme.textColor};
     background-color: ${(props) => props.theme.itemColor};
 
     img {
-        width: 200px;
-        height: 240px;
-        margin-right: 3px;
+            width: 200px;
+            height: 240px;
+            margin-right: 3px;
     };
 
     span {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+    };
 
     border: 3px solid ${(props) => props.theme.textColor};
     border-radius: 10px;
@@ -78,8 +83,11 @@ function Movies(){
     const {
         isLoading: isMovies, 
         data: Movies,
-        isError: MoviesError
-    } = useQuery("MoviesData", MoviesData);
+    } = useQuery<I_MovieDatas[]>("DailyMovies", getDailyBoxOffice);
+
+    const setMovies = useSetRecoilState(MoviesData);
+
+    useEffect(() => setMovies(Movies), [isMovies]);
 
     return (
         <MainWrapper>
@@ -94,13 +102,15 @@ function Movies(){
                             {
                                 Movies?.map((movie) => {
                                     return (
-                                        <MovieItem key={movie.movieCd}>
-                                            <img src={movie.posterURL}/>
-                                            <span>
-                                                <h4>{movie.movieNm}</h4>
-                                                <h4>{movie.director}</h4>
-                                            </span>
-                                        </MovieItem>
+                                        <Link to={`/${movie.movieCd}`}>
+                                            <MovieItem key={movie.movieCd}>
+                                                <img src={movie.posterURL}/>
+                                                <span>
+                                                    <h4>{movie.movieNm}</h4>
+                                                    <h4>{movie.director}</h4>
+                                                </span>
+                                            </MovieItem>
+                                        </Link>
                                     );
                                 })
                             }

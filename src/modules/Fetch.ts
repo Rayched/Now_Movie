@@ -29,14 +29,14 @@ interface I_Movies {
     movieCd: string;
 };
 
-const Kofic_baseURL = "http://www.kobis.or.kr/kobisopenapi/webservice/rest";
-const targetDt = getDateTime();
+const Kofic_baseURL = "https://www.kobis.or.kr/kobisopenapi/webservice/rest";
+const Kofic_Key = "3a15c5393ac14d11f6b132d6a07f330c";
 
 //KMDB, 영화 상세정보 데이터를 fetch하는 function
 async function MoviesInfo(movie: I_Movies){
     const getInfoData = await(await(
         await fetch(
-            `http://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${movie?.openDt}&ServiceKey=5UPCXV6TPKSU1P8QHI31`
+            `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${movie?.openDt}&ServiceKey=5UPCXV6TPKSU1P8QHI31`
         )
     ).json()).Data[0].Result[0];
 
@@ -53,9 +53,11 @@ async function MoviesInfo(movie: I_Movies){
 };
 
 //Kofic, 일일 박스오피스 데이터를 fetch하는 function
-export async function MoviesData(){
+export async function getDailyBoxOffice(){
+    const targetDt = getDateTime();
+    
     const DailyBoxOffice = await(await(
-        await fetch(`http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=3a15c5393ac14d11f6b132d6a07f330c&targetDt=${targetDt}`)
+        await fetch(`${Kofic_baseURL}/boxoffice/searchDailyBoxOfficeList.json?key=${Kofic_Key}&targetDt=${targetDt}`)
     ).json()).boxOfficeResult.dailyBoxOfficeList;
 
     const getDailyData = await (
@@ -78,7 +80,9 @@ export async function MoviesData(){
 };
 
 //Kofic, 영화 상세정보 데이터를 fetch하는 function
-export function DetailData(){
-    const getDetailData = false;
+export async function DetailData(movieCd: string|undefined){
+    const getDetailData = await(await(
+        await fetch(`${Kofic_baseURL}/movie/searchMovieInfo.json?key=${Kofic_Key}&movieCd=${movieCd}`)
+    ).json()).movieInfoResult.movieInfo;
     return getDetailData;
 }
