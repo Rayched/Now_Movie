@@ -1,5 +1,4 @@
 //Fetch function 모음
-
 import getDateTime from "./DateTime";
 
 interface I_DailyBoxOffice {
@@ -23,6 +22,53 @@ interface I_DailyBoxOffice {
     showCnt: string;
 };
 
+interface I_Details {
+    actors?: [{
+        cast?: string,
+        castEn?: string,
+        peopleNm?: string,
+        peopleNmEn?: string
+    }];
+    audits?: [{
+        auditNo?: string,
+        watchGradeNm?: string
+    }];
+    companys?: [{
+        companyCd?: string,
+        companyNm?: string,
+        companyNmEn?: string,
+        companyPartNm?: string
+    }];
+    directors?: [{
+        peopleNm?: string,
+        peopleNmEn?: string
+    }];
+    genres?: [{
+        genreNm?: string
+    }];
+    movieCd?: string;
+    movieNm?: string;
+    movieNmEn?: string;
+    movieNmOg?: string;
+    nations?: [{
+        nationNm?: string
+    }];
+    openDt?: string;
+    prdtStatNm?: string;
+    prdtYear?: string;
+    showTm?: string;
+    showTypes?: [{
+        showTypeGroupNm?: string;
+        showTypeNm?: string;
+    }];
+    staffs?: [{
+        peopleNm?: string;
+        peopleNmEn?: string;
+        staffRoleNm?: string;
+    }];
+    typeNm?: string;
+};
+
 interface I_Movies {
     movieNm: string;
     openDt: string;
@@ -34,9 +80,11 @@ const Kofic_Key = "3a15c5393ac14d11f6b132d6a07f330c";
 
 //KMDB, 영화 상세정보 데이터를 fetch하는 function
 async function MoviesInfo(movie: I_Movies){
+    const openDts = movie.openDt.split("-").join("");
+
     const getInfoData = await(await(
         await fetch(
-            `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${movie?.openDt}&ServiceKey=5UPCXV6TPKSU1P8QHI31`
+            `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${openDts}&ServiceKey=5UPCXV6TPKSU1P8QHI31`
         )
     ).json()).Data[0].Result[0];
 
@@ -64,7 +112,7 @@ export async function getDailyBoxOffice(){
         DailyBoxOffice?.map((movies: I_DailyBoxOffice) => {
             return {
                 movieNm: movies.movieNm,
-                openDt: movies.openDt.split("-").join(""),
+                openDt: movies.openDt,
                 movieCd: movies.movieCd
             };
         })
@@ -81,8 +129,26 @@ export async function getDailyBoxOffice(){
 
 //Kofic, 영화 상세정보 데이터를 fetch하는 function
 export async function DetailData(movieCd: string|undefined){
-    const getDetailData = await(await(
+    const getDetailData: I_Details = await(await(
         await fetch(`${Kofic_baseURL}/movie/searchMovieInfo.json?key=${Kofic_Key}&movieCd=${movieCd}`)
     ).json()).movieInfoResult.movieInfo;
-    return getDetailData;
+
+    const convert = [
+        getDetailData?.openDt?.slice(0, 4), 
+        getDetailData?.openDt?.slice(4, 6),
+        getDetailData?.openDt?.slice(6)
+    ];
+
+    const convertDts = convert.join("-");
+
+    const result = {
+        movieNm: getDetailData.movieNm,
+        movieCd: getDetailData.movieCd,
+        openDt: convertDts,
+        director: getDetailData?.directors?.map((data) => data.peopleNm),
+        genres: getDetailData.genres?.map(({genreNm}) => genreNm),
+        actors: getDetailData.actors?.map(({peopleNm}) => peopleNm).slice(0, 5),
+    };
+
+    return result;
 }

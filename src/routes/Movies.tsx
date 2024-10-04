@@ -1,20 +1,29 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import ThemeBtn from "../modules/ThemeBtn";
-import { useSetRecoilState } from "recoil";
 import { getDailyBoxOffice } from "../modules/Fetch";
-import { I_MovieDatas, MoviesData } from "../atoms";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { AllMovies } from "../atoms";
+import { useEffect } from "react";
 
-const MainWrapper = styled.div`
+export interface I_Movies {
+    movieNm?: string;
+    movieCd?: string;
+    openDt?: string;
+    posterURL?: string;
+    plots?: string;
+    director?: string;
+}
+
+export const MainWrapper = styled.div`
     display: flex;
     flex-direction: column;
     background-color: inherit;
     color: inherit;
 `;
 
-const Headers = styled.header`
+export const Headers = styled.header`
     display: flex;
     justify-content: center;
     border-bottom: 5px double ${(props) => props.theme.textColor};
@@ -22,7 +31,7 @@ const Headers = styled.header`
     margin-bottom: 10px;
 `;
 
-const Titles = styled.h3`
+export const Titles = styled.h3`
     width: 500px;
     font-weight: bold;
     text-align: center;
@@ -68,7 +77,7 @@ const MovieItem = styled.li`
     }
 `;
 
-const Footer = styled.footer`
+export const Footer = styled.footer`
     display: flex;
     justify-content: center;
 
@@ -79,15 +88,19 @@ const Footer = styled.footer`
     }
 `;
 
+export const Days: string[] = [
+    "일", "월", "화", "수", "목", "금", "토"
+];
+
 function Movies(){
     const {
-        isLoading: isMovies, 
-        data: Movies,
-    } = useQuery<I_MovieDatas[]>("DailyMovies", getDailyBoxOffice);
+        isLoading: isDailys, 
+        data: Dailys,
+    } = useQuery<I_Movies[]>("DailyMovies", getDailyBoxOffice);
 
-    const setMovies = useSetRecoilState(MoviesData);
+    const setMovies = useSetRecoilState(AllMovies);
 
-    useEffect(() => setMovies(Movies), [isMovies]);
+    useEffect(() => setMovies(Dailys), [isDailys]);
 
     return (
         <MainWrapper>
@@ -96,18 +109,23 @@ function Movies(){
             </Headers>
             <MovieList>
                 {
-                    isMovies ? "영화 데이터를 가져오고 있습니다."
+                    isDailys ? "영화 데이터를 가져오고 있습니다."
                     : (
                         <MovieList>
                             {
-                                Movies?.map((movie) => {
+                                Dailys?.map((movie) => {
+                                    const targetDts = String(movie.openDt);
+                                    const TargetDays = new Date(targetDts).getDay();
+
                                     return (
-                                        <Link to={`/${movie.movieCd}`}>
-                                            <MovieItem key={movie.movieCd}>
+                                        <Link to={`/${movie.movieCd}`} key={movie.movieCd}>
+                                            <MovieItem>
                                                 <img src={movie.posterURL}/>
                                                 <span>
                                                     <h4>{movie.movieNm}</h4>
-                                                    <h4>{movie.director}</h4>
+                                                    <h4>
+                                                        {movie.openDt} {`(${Days[TargetDays]})`}
+                                                    </h4>
                                                 </span>
                                             </MovieItem>
                                         </Link>
