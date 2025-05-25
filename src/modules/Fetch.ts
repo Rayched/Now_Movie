@@ -1,5 +1,6 @@
 //Fetch function 모음
 import getDateTime from "./DateTime";
+import { KMDB_Key, Kofic_Key } from "./API_Keys";
 
 interface I_DailyBoxOffice {
     audiAcc: string;
@@ -76,7 +77,8 @@ interface I_Movies {
 };
 
 const Kofic_baseURL = "https://www.kobis.or.kr/kobisopenapi/webservice/rest";
-const Kofic_Key = "3a15c5393ac14d11f6b132d6a07f330c";
+const KoficKey = Kofic_Key;
+const KMDBKey = KMDB_Key;
 
 //KMDB, 영화 상세정보 데이터를 fetch하는 function
 async function MoviesInfo(movie: I_Movies){
@@ -84,7 +86,7 @@ async function MoviesInfo(movie: I_Movies){
 
     const getInfoData = await(await(
         await fetch(
-            `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${openDts}&ServiceKey=5UPCXV6TPKSU1P8QHI31`
+            `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp?collection=kmdb_new2&detail=Y&title=${movie?.movieNm}&releaseDts=${openDts}&ServiceKey=${KMDBKey}`
         )
     ).json()).Data[0].Result[0];
 
@@ -105,7 +107,7 @@ export async function getDailyBoxOffice(){
     const targetDt = getDateTime();
     
     const DailyBoxOffice = await(await(
-        await fetch(`${Kofic_baseURL}/boxoffice/searchDailyBoxOfficeList.json?key=${Kofic_Key}&targetDt=${targetDt}`)
+        await fetch(`${Kofic_baseURL}/boxoffice/searchDailyBoxOfficeList.json?key=${KoficKey}&targetDt=${targetDt}`)
     ).json()).boxOfficeResult.dailyBoxOfficeList;
 
     const getDailyData = await (
@@ -130,7 +132,7 @@ export async function getDailyBoxOffice(){
 //Kofic, 영화 상세정보 데이터를 fetch하는 function
 export async function DetailData(movieCd: string|undefined){
     const getDetailData: I_Details = await(await(
-        await fetch(`${Kofic_baseURL}/movie/searchMovieInfo.json?key=${Kofic_Key}&movieCd=${movieCd}`)
+        await fetch(`${Kofic_baseURL}/movie/searchMovieInfo.json?key=${KoficKey}&movieCd=${movieCd}`)
     ).json()).movieInfoResult.movieInfo;
 
     const convert = [
